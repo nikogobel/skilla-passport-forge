@@ -9,7 +9,8 @@ import {
   BarChart3,
   MessageSquare,
   Search,
-  Bell
+  Bell,
+  X
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
@@ -33,7 +34,7 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { isSidebarOpen } = useSidebar();
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
 
   // Check if user is admin
   const { data: isAdmin } = useQuery({
@@ -64,16 +65,17 @@ export function Sidebar() {
           : '-translate-x-full w-0 opacity-0'
       } flex flex-col items-center overflow-hidden`}
     >
-      {/* Top spacing to avoid burger menu overlap */}
-      <div className="h-16"></div>
-      
-      {/* Logo */}
-      <div className="sidebar-item mb-8">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <span className="text-primary-foreground font-bold text-sm">S</span>
+      {/* Close Button integrated in sidebar */}
+      <div className="h-16 flex items-center justify-center">
+        <div
+          className="sidebar-item"
+          onClick={toggleSidebar}
+          title="Close sidebar"
+        >
+          <X className="w-5 h-5" />
         </div>
       </div>
-
+      
       {/* Navigation Items */}
       <div className="flex flex-col space-y-2">
         {navigationItems.map((item) => {
