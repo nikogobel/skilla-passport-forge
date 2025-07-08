@@ -105,7 +105,7 @@ const Index = () => {
         <main className="max-w-7xl mx-auto px-6 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Progress Tracker - spans 1 column */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <ProgressTracker />
             </div>
             
