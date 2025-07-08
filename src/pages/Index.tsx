@@ -9,6 +9,7 @@ import { DashboardTile } from "@/components/DashboardTile";
 import { WeeklyCalendar } from "@/components/WeeklyCalendar";
 import { ProgressTracker } from "@/components/ProgressTracker";
 import { ActivityFeed } from "@/components/ActivityFeed";
+import { Glow } from "@/components/ui/glow";
 const Index = () => {
   const {
     user,
@@ -78,9 +79,14 @@ const Index = () => {
   const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Glow Effects */}
+      <Glow variant="top" color="purple" intensity="subtle" className="animate-appear-zoom delay-500" />
+      <Glow variant="center" color="blue" intensity="normal" className="animate-appear-zoom delay-1000 animate-glow-pulse" />
+      <Glow variant="below" color="pink" intensity="subtle" className="animate-appear-zoom delay-1500 animate-glow-drift" />
+      
       {/* Main Dashboard Content */}
-      <div className="min-h-screen">
+      <div className="min-h-screen relative z-10">
         {/* Top Section with Centered Title and Logout */}
         <div className="relative px-6 py-8">
           {/* Logout Button - Top Right */}
