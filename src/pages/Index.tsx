@@ -119,6 +119,83 @@ const Index = () => {
             {/* Activity Feed */}
             <ActivityFeed />
             
+            {/* Recent Messages */}
+            <DashboardTile title="Recent Messages" subtitle="Latest messages from your peers">
+              <div className="space-y-4">
+                {[
+                  {
+                    id: 1,
+                    user: "Sarah Johnson",
+                    message: "Great work on the React project! The component structure is really clean.",
+                    time: "5 min ago",
+                    avatar: "SJ",
+                    type: "feedback"
+                  },
+                  {
+                    id: 2,
+                    user: "Mike Chen",
+                    message: "Anyone up for a TypeScript study session this afternoon?",
+                    time: "12 min ago",
+                    avatar: "MC",
+                    type: "question"
+                  },
+                  {
+                    id: 3,
+                    user: "Emma Wilson",
+                    message: "Just completed the Database Design workshop. Highly recommend!",
+                    time: "1 hour ago",
+                    avatar: "EW",
+                    type: "achievement"
+                  },
+                  {
+                    id: 4,
+                    user: "Alex Rivera",
+                    message: "Check out this cool JavaScript trick I learned today...",
+                    time: "2 hours ago",
+                    avatar: "AR",
+                    type: "tip"
+                  }
+                ].map((message) => (
+                  <div key={message.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm flex-shrink-0">
+                      {message.avatar}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium text-sm text-foreground truncate">{message.user}</p>
+                        <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{message.time}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{message.message}</p>
+                      <div className="mt-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          message.type === 'feedback' ? 'bg-green-100 text-green-800' :
+                          message.type === 'question' ? 'bg-blue-100 text-blue-800' :
+                          message.type === 'achievement' ? 'bg-purple-100 text-purple-800' :
+                          'bg-orange-100 text-orange-800'
+                        }`}>
+                          {message.type === 'feedback' ? '💬 Feedback' :
+                           message.type === 'question' ? '❓ Question' :
+                           message.type === 'achievement' ? '🏆 Achievement' :
+                           '💡 Tip'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-4 pt-4 border-t border-border">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full text-sm text-muted-foreground hover:text-foreground"
+                    onClick={() => navigate('/messages')}
+                  >
+                    View all messages →
+                  </Button>
+                </div>
+              </div>
+            </DashboardTile>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 mb-8">
             {/* Quick Actions */}
             <DashboardTile title="Quick Actions" subtitle="Access your key features">
               <div className="grid grid-cols-2 gap-4">
