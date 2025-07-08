@@ -165,6 +165,29 @@ All colors MUST be HSL.
   .progress-ring {
     transition: stroke-dasharray 0.3s ease-in-out;
   }
+
+  /* Burger menu styles */
+  .burger-menu {
+    @apply fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm border border-border hover:bg-accent transition-all duration-200;
+  }
+
+  /* Sidebar animation styles */
+  .sidebar-hidden {
+    transform: translateX(-100%);
+  }
+
+  .sidebar-visible {
+    transform: translateX(0);
+  }
+
+  /* Main content adjustment */
+  .main-content-shifted {
+    margin-left: 5rem; /* 80px for sidebar width */
+  }
+
+  .main-content-full {
+    margin-left: 0;
+  }
 }
 
 /* Keyframe animations */

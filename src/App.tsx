@@ -6,7 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SidebarProvider as CustomSidebarProvider } from "@/contexts/SidebarContext";
+import { BurgerMenu } from "@/components/BurgerMenu";
 import { Sidebar } from "@/components/Sidebar";
+import { AppLayout } from "@/components/AppLayout";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -40,10 +43,9 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/*" element={
               <ProtectedRoute>
-                <SidebarProvider>
-                  <div className="min-h-screen w-full">
-                    <Sidebar />
-                    <main className="ml-20 min-h-screen">
+                <CustomSidebarProvider>
+                  <SidebarProvider>
+                    <AppLayout>
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/onboarding" element={<Onboarding />} />
@@ -62,9 +64,9 @@ const App = () => (
                         <Route path="/admin/onboarding-status" element={<AdminOnboardingStatus />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
-                    </main>
-                  </div>
-                </SidebarProvider>
+                    </AppLayout>
+                  </SidebarProvider>
+                </CustomSidebarProvider>
               </ProtectedRoute>
             } />
           </Routes>

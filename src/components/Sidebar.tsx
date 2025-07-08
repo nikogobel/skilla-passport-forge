@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 const navigationItems = [
   { icon: Home, path: "/", label: "Home" },
@@ -32,6 +33,7 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { isSidebarOpen } = useSidebar();
 
   // Check if user is admin
   const { data: isAdmin } = useQuery({
@@ -55,7 +57,11 @@ export function Sidebar() {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-full w-20 bg-sidebar-background border-r border-sidebar-border flex flex-col items-center py-6 z-50">
+    <div 
+      className={`fixed left-0 top-0 h-full bg-sidebar-background border-r border-sidebar-border flex flex-col items-center py-6 z-40 transition-transform duration-300 ease-in-out ${
+        isSidebarOpen ? 'translate-x-0 w-20' : '-translate-x-full w-0'
+      }`}
+    >
       {/* Logo */}
       <div className="sidebar-item mb-8">
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
