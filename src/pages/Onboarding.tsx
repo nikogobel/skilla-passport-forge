@@ -76,6 +76,8 @@ export default function Onboarding() {
           user_id: user.id,
           question_id: questionId,
           response,
+        }, {
+          onConflict: 'user_id,question_id'
         });
       
       if (error) throw error;

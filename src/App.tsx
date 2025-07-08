@@ -1,10 +1,12 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Sidebar } from "@/components/Sidebar";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -12,6 +14,13 @@ import Onboarding from "./pages/Onboarding";
 import Passport from "./pages/Passport";
 import AdminOnboardingStatus from "./pages/AdminOnboardingStatus";
 import NotFound from "./pages/NotFound";
+import Learning from "./pages/Learning";
+import Schedule from "./pages/Schedule";
+import Analytics from "./pages/Analytics";
+import Community from "./pages/Community";
+import Resources from "./pages/Resources";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -25,28 +34,31 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/" element={
+            <Route path="/*" element={
               <ProtectedRoute>
-                <Index />
+                <SidebarProvider>
+                  <div className="flex min-h-screen w-full">
+                    <Sidebar />
+                    <main className="flex-1">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/onboarding" element={<Onboarding />} />
+                        <Route path="/passport" element={<Passport />} />
+                        <Route path="/learning" element={<Learning />} />
+                        <Route path="/schedule" element={<Schedule />} />
+                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/community" element={<Community />} />
+                        <Route path="/resources" element={<Resources />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/admin/onboarding-status" element={<AdminOnboardingStatus />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </main>
+                  </div>
+                </SidebarProvider>
               </ProtectedRoute>
             } />
-            <Route path="/onboarding" element={
-              <ProtectedRoute>
-                <Onboarding />
-              </ProtectedRoute>
-            } />
-            <Route path="/passport" element={
-              <ProtectedRoute>
-                <Passport />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/onboarding-status" element={
-              <ProtectedRoute>
-                <AdminOnboardingStatus />
-              </ProtectedRoute>
-            } />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
