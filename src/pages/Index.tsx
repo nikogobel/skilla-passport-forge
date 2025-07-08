@@ -96,7 +96,7 @@ const Index = () => {
               {getGreeting()}, {firstName}
             </h1>
             <p className="text-muted-foreground text-lg">
-              Wir wünschen dir einen schönen und produktiven Tag
+              Hope you have a beautiful and skillfull day ahead!
             </p>
           </div>
         </div>
