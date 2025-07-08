@@ -149,37 +149,85 @@ export default function Onboarding() {
       return;
     }
 
-    // Save the response
-    await saveResponseMutation.mutateAsync({
-      questionId: currentQuestion.id,
-      response,
-    });
-
-    // Check for follow-up question
-    if (currentQuestion.metadata?.follow_up_question) {
-      const followUpQuestion: Question = {
-        id: `follow-up-${currentQuestion.id}`,
-        question_text: currentQuestion.metadata.follow_up_question,
-        question_order: currentQuestion.question_order + 0.5,
-        metadata: {},
-      };
-
-      setDynamicQuestions(prev => {
-        const exists = prev.find(q => q.id === followUpQuestion.id);
-        if (!exists) {
-          return [...prev, followUpQuestion];
-        }
-        return prev;
+    try {
+      // Save the response
+      await saveResponseMutation.mutateAsync({
+        questionId: currentQuestion.id,
+        response,
       });
-    }
 
-    const totalQuestions = allQuestions.length + dynamicQuestions.length;
-    
-    if (currentStep < totalQuestions - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Complete onboarding
-      await completeOnboardingMutation.mutateAsync();
+      // Generate skill-specific questions for section B
+      if (currentQuestion.question_order === 4) { // "Name up to five skills" question
+        const skills = response.split(/[,\n]/).map(s => s.trim()).filter(s => s.length > 0).slice(0, 5);
+        
+        const newDynamicQuestions: Question[] = [];
+        skills.forEach((skill, index) => {
+          const baseOrder = 6.1 + (index * 0.4);
+          newDynamicQuestions.push(
+            {
+              id: `skill-confidence-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              question_text: `On a scale from 1 (novice) to 5 (expert), how confident are you in ${skill}?`,
+              question_order: baseOrder,
+              metadata: { section: "C", type: "scale", scale: [1, 2, 3, 4, 5], skill }
+            },
+            {
+              id: `skill-frequency-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              question_text: `How often did you use ${skill} in the past month?`,
+              question_order: baseOrder + 0.1,
+              metadata: { section: "C", type: "select", options: ["Daily", "Weekly", "Monthly", "Rarely"], skill }
+            },
+            {
+              id: `skill-achievement-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              question_text: `What was the largest or most complex thing you achieved with ${skill}?`,
+              question_order: baseOrder + 0.2,
+              metadata: { section: "C", type: "text", skill }
+            },
+            {
+              id: `skill-training-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              question_text: `When did you last up-skill or train on ${skill}?`,
+              question_order: baseOrder + 0.3,
+              metadata: { section: "C", type: "select", options: ["Less than 6 months ago", "6-12 months ago", "More than 1 year ago", "Never"], skill }
+            }
+          );
+        });
+
+        setDynamicQuestions(prev => [...prev, ...newDynamicQuestions]);
+      }
+
+      // Check for follow-up question
+      if (currentQuestion.metadata?.follow_up_question) {
+        const followUpQuestion: Question = {
+          id: `follow-up-${currentQuestion.id}`,
+          question_text: currentQuestion.metadata.follow_up_question,
+          question_order: currentQuestion.question_order + 0.5,
+          metadata: {},
+        };
+
+        setDynamicQuestions(prev => {
+          const exists = prev.find(q => q.id === followUpQuestion.id);
+          if (!exists) {
+            return [...prev, followUpQuestion];
+          }
+          return prev;
+        });
+      }
+
+      const allQuestionsList = [...allQuestions, ...dynamicQuestions];
+      const totalQuestions = allQuestionsList.length;
+      
+      if (currentStep < totalQuestions - 1) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        // Complete onboarding
+        await completeOnboardingMutation.mutateAsync();
+      }
+    } catch (error) {
+      console.error('Error in handleNext:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save response. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
