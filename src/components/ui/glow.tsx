@@ -60,9 +60,9 @@ const colorMap = {
 };
 
 const intensityMap = {
-  subtle: { outerOpacity: "10%", innerOpacity: "5%" },
-  normal: { outerOpacity: "10%", innerOpacity: "10%" },
-  strong: { outerOpacity: "15%", innerOpacity: "20%" },
+  subtle: { outerOpacity: "5%", innerOpacity: "3%" },
+  normal: { outerOpacity: "8%", innerOpacity: "5%" },
+  strong: { outerOpacity: "12%", innerOpacity: "8%" },
 };
 
 const Glow = React.forwardRef<
@@ -74,26 +74,30 @@ const Glow = React.forwardRef<
 
   return (
     <div ref={ref} className={cn(glowVariants({ variant, color, intensity }), className)} {...props}>
-      {/* Outer soft halo */}
+      {/* Outer soft halo - much smaller and more centered */}
       <div
         className={cn(
-          "absolute left-1/2 h-[256px] w-[60%] -translate-x-1/2 scale-[2.5] rounded-[50%]",
-          "sm:h-[512px]",
-          variant === "center" && "-translate-y-1/2"
+          "absolute left-1/2 h-[200px] w-[300px] -translate-x-1/2 rounded-[50%]",
+          "sm:h-[300px] sm:w-[400px]",
+          variant === "center" && "-translate-y-1/2",
+          variant === "top" && "top-[10%]",
+          variant === "bottom" && "bottom-[10%]"
         )}
         style={{
-          background: `radial-gradient(ellipse at center, ${colors.outer} ${opacities.outerOpacity}, transparent 60%)`
+          background: `radial-gradient(ellipse at center, ${colors.outer} ${opacities.outerOpacity}, transparent 70%)`
         }}
       />
-      {/* Inner brighter core */}
+      {/* Inner brighter core - smaller and more subtle */}
       <div
         className={cn(
-          "absolute left-1/2 h-[128px] w-[40%] -translate-x-1/2 scale-[2] rounded-[50%]",
-          "sm:h-[256px]",
-          variant === "center" && "-translate-y-1/2"
+          "absolute left-1/2 h-[120px] w-[200px] -translate-x-1/2 rounded-[50%]",
+          "sm:h-[180px] sm:w-[250px]",
+          variant === "center" && "-translate-y-1/2",
+          variant === "top" && "top-[12%]",
+          variant === "bottom" && "bottom-[12%]"
         )}
         style={{
-          background: `radial-gradient(ellipse at center, ${colors.inner} ${opacities.innerOpacity}, transparent 60%)`
+          background: `radial-gradient(ellipse at center, ${colors.inner} ${opacities.innerOpacity}, transparent 80%)`
         }}
       />
     </div>
