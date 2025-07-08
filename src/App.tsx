@@ -41,9 +41,9 @@ const App = () => (
             <Route path="/*" element={
               <ProtectedRoute>
                 <SidebarProvider>
-                  <div className="flex min-h-screen w-full">
+                  <div className="min-h-screen w-full">
                     <Sidebar />
-                    <main className="flex-1">
+                    <main className="ml-20 min-h-screen">
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/onboarding" element={<Onboarding />} />

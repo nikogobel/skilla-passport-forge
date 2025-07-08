@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Award, LogOut, BookOpen, Settings, User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { Sidebar } from "@/components/Sidebar";
 import { DashboardTile } from "@/components/DashboardTile";
 import { WeeklyCalendar } from "@/components/WeeklyCalendar";
 import { ProgressTracker } from "@/components/ProgressTracker";
@@ -80,10 +79,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Sidebar />
-      
       {/* Main Dashboard Content */}
-      <div className="ml-20 min-h-screen">
+      <div className="min-h-screen">
         {/* Header */}
         <header className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
