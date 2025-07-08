@@ -81,23 +81,28 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Main Dashboard Content */}
       <div className="min-h-screen">
-        {/* Header */}
-        <header className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                {getGreeting()}, {firstName}
-              </h1>
-              <p className="text-muted-foreground">Hope you have a beautiful and skillful day.</p>
-            </div>
+        {/* Top Section with Centered Title and Logout */}
+        <div className="relative px-6 py-8">
+          {/* Logout Button - Top Right */}
+          <div className="absolute top-6 right-6">
             <Button variant="ghost" size="icon" onClick={signOut} className="hover:bg-destructive/10 hover:text-destructive">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
-        </header>
+          
+          {/* Centered Title and Subtitle */}
+          <div className="text-center pt-8 pb-12">
+            <h1 className="text-4xl font-bold text-foreground mb-4">
+              {getGreeting()}, {firstName}
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Wir wünschen dir einen schönen und produktiven Tag
+            </p>
+          </div>
+        </div>
 
         {/* Dashboard Grid */}
-        <main className="max-w-7xl mx-auto px-6 py-8">
+        <main className="max-w-7xl mx-auto px-6 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Progress Tracker - spans 1 column */}
             <div className="lg:col-span-1">
