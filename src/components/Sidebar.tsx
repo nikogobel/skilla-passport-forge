@@ -58,9 +58,11 @@ export function Sidebar() {
 
   return (
     <div 
-      className={`fixed left-0 top-0 h-full bg-sidebar-background border-r border-sidebar-border flex flex-col items-center z-40 transition-transform duration-300 ease-in-out ${
-        isSidebarOpen ? 'translate-x-0 w-20' : '-translate-x-full w-0'
-      }`}
+      className={`fixed left-0 top-0 h-full transition-all duration-300 ease-in-out z-40 ${
+        isSidebarOpen 
+          ? 'translate-x-0 w-20 bg-sidebar-background border-r border-sidebar-border' 
+          : '-translate-x-full w-0 opacity-0'
+      } flex flex-col items-center overflow-hidden`}
     >
       {/* Top spacing to avoid burger menu overlap */}
       <div className="h-16"></div>
