@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, BookOpen, Award, Settings, LogOut } from "lucide-react";
+import { Award, LogOut, BookOpen, Settings, User } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { Sidebar } from "@/components/Sidebar";
+import { DashboardTile } from "@/components/DashboardTile";
+import { WeeklyCalendar } from "@/components/WeeklyCalendar";
+import { ProgressTracker } from "@/components/ProgressTracker";
+import { ActivityFeed } from "@/components/ActivityFeed";
 const Index = () => {
   const {
     user,
@@ -48,130 +52,126 @@ const Index = () => {
     },
     enabled: !!user?.id
   });
-  return <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Award className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold">Skilla</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {user?.email}
-            </span>
-            <Button variant="ghost" size="icon" onClick={signOut}>
+
+  // Get user profile for personalized greeting
+  const { data: profile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user?.id
+  });
+
+  // Dynamic greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
+
+  return (
+    <div className="min-h-screen">
+      <Sidebar />
+      
+      {/* Main Dashboard Content */}
+      <div className="ml-20 min-h-screen">
+        {/* Header */}
+        <header className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">
+                {getGreeting()}, {firstName}
+              </h1>
+              <p className="text-muted-foreground">Hope you have a beautiful and skillful day.</p>
+            </div>
+            <Button variant="ghost" size="icon" onClick={signOut} className="hover:bg-destructive/10 hover:text-destructive">
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4">Your Skills Matter.</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Build, track, and showcase your professional skills with our comprehensive assessment platform.
-          </p>
-        </div>
-
-        {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Onboarding Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Skill Assessment
-              </CardTitle>
-              <CardDescription>
-                Complete your skills evaluation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {onboardingStatus?.hasPassport ? <Badge className="bg-success text-success-foreground">Complete</Badge> : onboardingStatus?.responseCount > 0 ? <Badge variant="warning">In Progress</Badge> : <Badge variant="outline">Not Started</Badge>}
-                <Button className="w-full" onClick={() => navigate('/onboarding')} variant={onboardingStatus?.hasPassport ? "outline" : "default"}>
-                  {onboardingStatus?.hasPassport ? "Review Assessment" : "Start Assessment"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Passport Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5" />
-                Skill Passport
-              </CardTitle>
-              <CardDescription>
-                View your professional skills dashboard
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {onboardingStatus?.hasPassport ? <Badge className="bg-success text-success-foreground">Available</Badge> : <Badge variant="outline">Pending</Badge>}
-                <Button className="w-full" onClick={() => navigate('/passport')} disabled={!onboardingStatus?.hasPassport}>
-                  View Passport
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Admin Card */}
-          {isAdmin && <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Admin Dashboard
-                </CardTitle>
-                <CardDescription>
-                  Monitor team onboarding progress
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Badge variant="secondary">Admin Access</Badge>
-                  <Button className="w-full" variant="outline" onClick={() => navigate('/admin/onboarding-status')}>
-                    View Team Status
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>}
-        </div>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common tasks and helpful resources
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2" onClick={() => navigate('/onboarding')}>
-                <BookOpen className="h-6 w-6" />
-                <span>Assessment</span>
-              </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2" onClick={() => navigate('/passport')} disabled={!onboardingStatus?.hasPassport}>
-                <Award className="h-6 w-6" />
-                <span>Passport</span>
-              </Button>
-              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2" onClick={() => navigate('/passport')} disabled={!onboardingStatus?.hasPassport}>
-                <User className="h-6 w-6" />
-                <span>Profile</span>
-              </Button>
-              {isAdmin && <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2" onClick={() => navigate('/admin/onboarding-status')}>
-                  <Settings className="h-6 w-6" />
-                  <span>Admin</span>
-                </Button>}
+        {/* Dashboard Grid */}
+        <main className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* Progress Tracker - spans 1 column */}
+            <div className="lg:col-span-1">
+              <ProgressTracker />
             </div>
-          </CardContent>
-        </Card>
-      </main>
-    </div>;
+            
+            {/* Weekly Calendar - spans 2 columns */}
+            <div className="lg:col-span-2">
+              <WeeklyCalendar />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Activity Feed */}
+            <ActivityFeed />
+            
+            {/* Quick Actions */}
+            <DashboardTile title="Quick Actions" subtitle="Access your key features">
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
+                  onClick={() => navigate('/onboarding')}
+                >
+                  <BookOpen className="h-6 w-6 text-primary" />
+                  <span className="text-sm font-medium">Assessment</span>
+                  {onboardingStatus?.responseCount > 0 && !onboardingStatus?.hasPassport && (
+                    <Badge variant="warning" className="text-xs">In Progress</Badge>
+                  )}
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
+                  onClick={() => navigate('/passport')} 
+                  disabled={!onboardingStatus?.hasPassport}
+                >
+                  <Award className="h-6 w-6 text-primary" />
+                  <span className="text-sm font-medium">Passport</span>
+                  {onboardingStatus?.hasPassport && (
+                    <Badge className="text-xs bg-success text-success-foreground">Ready</Badge>
+                  )}
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
+                  onClick={() => navigate('/passport')} 
+                  disabled={!onboardingStatus?.hasPassport}
+                >
+                  <User className="h-6 w-6 text-primary" />
+                  <span className="text-sm font-medium">Profile</span>
+                </Button>
+                
+                {isAdmin && (
+                  <Button 
+                    variant="outline" 
+                    className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
+                    onClick={() => navigate('/admin/onboarding-status')}
+                  >
+                    <Settings className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">Admin</span>
+                    <Badge variant="secondary" className="text-xs">Admin</Badge>
+                  </Button>
+                )}
+              </div>
+            </DashboardTile>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 };
 export default Index;
