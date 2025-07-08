@@ -21,6 +21,10 @@ import Community from "./pages/Community";
 import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import Calendar from "./pages/Calendar";
+import Messages from "./pages/Messages";
+import SearchPage from "./pages/Search";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +55,10 @@ const App = () => (
                         <Route path="/resources" element={<Resources />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/calendar" element={<Calendar />} />
+                        <Route path="/messages" element={<Messages />} />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route path="/notifications" element={<Notifications />} />
                         <Route path="/admin/onboarding-status" element={<AdminOnboardingStatus />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>

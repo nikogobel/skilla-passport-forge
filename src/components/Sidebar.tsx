@@ -50,11 +50,8 @@ export function Sidebar() {
   });
 
   const handleNavigation = (path: string) => {
-    // Only navigate to existing routes
-    if (path === "/" || path === "/onboarding" || path === "/passport" || 
-        (path === "/admin/onboarding-status" && isAdmin)) {
-      navigate(path);
-    }
+    // Navigate to all available routes
+    navigate(path);
   };
 
   return (
@@ -71,16 +68,12 @@ export function Sidebar() {
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
-          const isAccessible = item.path === "/" || item.path === "/onboarding" || 
-                             item.path === "/passport" || item.path === "/profile";
           
           return (
             <div
               key={item.path}
-              className={`sidebar-item ${isActive ? 'active' : ''} ${
-                !isAccessible ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              onClick={() => isAccessible && handleNavigation(item.path)}
+              className={`sidebar-item ${isActive ? 'active' : ''}`}
+              onClick={() => handleNavigation(item.path)}
               title={item.label}
             >
               <Icon className="w-5 h-5" />
