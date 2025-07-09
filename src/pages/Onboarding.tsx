@@ -70,6 +70,8 @@ export default function Onboarding() {
     mutationFn: async ({ questionId, response }: { questionId: string; response: string }) => {
       if (!user?.id) throw new Error('No user');
       
+      console.log('Saving response:', { questionId, response, userId: user.id });
+      
       const { error } = await supabase
         .from('onboarding_responses')
         .upsert({
@@ -80,7 +82,10 @@ export default function Onboarding() {
           onConflict: 'user_id,question_id'
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['onboarding-responses'] });
