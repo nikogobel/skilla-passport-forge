@@ -165,30 +165,32 @@ export default function Onboarding() {
         const newDynamicQuestions: Question[] = [];
         skills.forEach((skill, index) => {
           const baseOrder = 6.1 + (index * 0.4);
+          // Generate proper UUIDs for dynamic questions
+          const skillId = skill.replace(/\s+/g, '-').toLowerCase();
           newDynamicQuestions.push(
             {
-              id: `skill-confidence-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              id: crypto.randomUUID(),
               question_text: `On a scale from 1 (novice) to 5 (expert), how confident are you in ${skill}?`,
               question_order: baseOrder,
-              metadata: { section: "C", type: "scale", scale: [1, 2, 3, 4, 5], skill }
+              metadata: { section: "C", type: "scale", scale: [1, 2, 3, 4, 5], skill, skillId: `confidence-${skillId}` }
             },
             {
-              id: `skill-frequency-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              id: crypto.randomUUID(),
               question_text: `How often did you use ${skill} in the past month?`,
               question_order: baseOrder + 0.1,
-              metadata: { section: "C", type: "select", options: ["Daily", "Weekly", "Monthly", "Rarely"], skill }
+              metadata: { section: "C", type: "select", options: ["Daily", "Weekly", "Monthly", "Rarely"], skill, skillId: `frequency-${skillId}` }
             },
             {
-              id: `skill-achievement-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              id: crypto.randomUUID(),
               question_text: `What was the largest or most complex thing you achieved with ${skill}?`,
               question_order: baseOrder + 0.2,
-              metadata: { section: "C", type: "text", skill }
+              metadata: { section: "C", type: "text", skill, skillId: `achievement-${skillId}` }
             },
             {
-              id: `skill-training-${skill.replace(/\s+/g, '-').toLowerCase()}`,
+              id: crypto.randomUUID(),
               question_text: `When did you last up-skill or train on ${skill}?`,
               question_order: baseOrder + 0.3,
-              metadata: { section: "C", type: "select", options: ["Less than 6 months ago", "6-12 months ago", "More than 1 year ago", "Never"], skill }
+              metadata: { section: "C", type: "select", options: ["Less than 6 months ago", "6-12 months ago", "More than 1 year ago", "Never"], skill, skillId: `training-${skillId}` }
             }
           );
         });
