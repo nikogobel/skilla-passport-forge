@@ -16,7 +16,9 @@ export function AppLayout({ children }: AppLayoutProps) {
       <main className={`min-h-screen transition-all duration-300 ease-in-out ${
         isSidebarOpen ? 'ml-20' : 'ml-0'
       }`}>
-        {children}
+        <div className={`${!isSidebarOpen ? 'pt-16 md:pt-0' : ''}`}>
+          {children}
+        </div>
       </main>
     </div>
   );

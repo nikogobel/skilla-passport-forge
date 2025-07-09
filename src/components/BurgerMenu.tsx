@@ -13,7 +13,7 @@ export function BurgerMenu() {
       variant="ghost"
       size="icon"
       onClick={toggleSidebar}
-      className="fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm border border-border hover:bg-accent transition-all duration-200"
+      className="fixed top-4 left-4 z-50 bg-background/80 backdrop-blur-sm border border-border hover:bg-accent transition-all duration-200 md:hidden"
       aria-label="Open sidebar"
     >
       <Menu className="h-5 w-5" />

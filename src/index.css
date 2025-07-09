@@ -198,6 +198,17 @@ All colors MUST be HSL.
     margin-left: 0;
   }
 
+  /* Mobile burger menu spacing */
+  .mobile-content-offset {
+    padding-top: 4rem; /* 64px to avoid burger menu overlap */
+  }
+
+  @media (min-width: 768px) {
+    .mobile-content-offset {
+      padding-top: 0;
+    }
+  }
+
   /* Glow animation utilities */
   .animate-appear-zoom {
     animation: appear-zoom 0.6s ease-out forwards;
