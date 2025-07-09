@@ -80,8 +80,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Glow Effects - centered and subtle */}
-      <Glow variant="center" color="primary" intensity="subtle" className="animate-appear-zoom delay-1000 animate-glow-subtle" />
+      {/* Glow Effects - top positioned and visible */}
+      <Glow variant="top" className="animate-appear-zoom delay-1000" />
       
       {/* Main Dashboard Content */}
       <div className="min-h-screen relative z-10">

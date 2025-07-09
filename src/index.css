@@ -45,8 +45,8 @@ All colors MUST be HSL.
     --warning-foreground: 0 0% 100%;
 
     /* Brand colors for glow effects */
-    --brand: 263 85% 65%;
-    --brand-foreground: 250 95% 85%;
+    --brand: 27 96% 61%;
+    --brand-foreground: 31 97% 72%;
 
     /* Dashboard specific colors */
     --dashboard-bg: 250 20% 99%;
@@ -110,6 +110,11 @@ All colors MUST be HSL.
 
     --warning: 38 92% 60%;
     --warning-foreground: 0 0% 100%;
+    
+    /* Brand colors for dark mode */
+    --brand: 31 97% 72%;
+    --brand-foreground: 27 96% 61%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
