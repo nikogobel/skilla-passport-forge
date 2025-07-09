@@ -54,15 +54,15 @@ const Index = () => {
   });
 
   // Get user profile for personalized greeting
-  const { data: profile } = useQuery({
+  const {
+    data: profile
+  } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const { data } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      const {
+        data
+      } = await supabase.from('profiles').select('full_name').eq('user_id', user.id).maybeSingle();
       return data;
     },
     enabled: !!user?.id
@@ -75,11 +75,8 @@ const Index = () => {
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
-
   const firstName = profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
-
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  return <div className="min-h-screen relative overflow-hidden">
       {/* Glow Effects - top positioned and visible */}
       <Glow variant="top" className="animate-appear-zoom delay-1000" />
       
@@ -96,7 +93,7 @@ const Index = () => {
           
           {/* Centered Title and Subtitle */}
           <div className="text-center pt-8 pb-12">
-            <h1 className="text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-5xl text-foreground mb-4 font-medium">
               {getGreeting()}, {firstName}
             </h1>
             <p className="text-muted-foreground text-lg">
@@ -130,41 +127,35 @@ const Index = () => {
             {/* Recent Messages */}
             <DashboardTile title="Recent Messages" subtitle="Latest messages from your peers">
               <div className="space-y-4">
-                {[
-                  {
-                    id: 1,
-                    user: "Sarah Johnson",
-                    message: "Great work on the React project! The component structure is really clean.",
-                    time: "5 min ago",
-                    avatar: "SJ",
-                    type: "feedback"
-                  },
-                  {
-                    id: 2,
-                    user: "Mike Chen",
-                    message: "Anyone up for a TypeScript study session this afternoon?",
-                    time: "12 min ago",
-                    avatar: "MC",
-                    type: "question"
-                  },
-                  {
-                    id: 3,
-                    user: "Emma Wilson",
-                    message: "Just completed the Database Design workshop. Highly recommend!",
-                    time: "1 hour ago",
-                    avatar: "EW",
-                    type: "achievement"
-                  },
-                  {
-                    id: 4,
-                    user: "Alex Rivera",
-                    message: "Check out this cool JavaScript trick I learned today...",
-                    time: "2 hours ago",
-                    avatar: "AR",
-                    type: "tip"
-                  }
-                ].map((message) => (
-                  <div key={message.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                {[{
+                id: 1,
+                user: "Sarah Johnson",
+                message: "Great work on the React project! The component structure is really clean.",
+                time: "5 min ago",
+                avatar: "SJ",
+                type: "feedback"
+              }, {
+                id: 2,
+                user: "Mike Chen",
+                message: "Anyone up for a TypeScript study session this afternoon?",
+                time: "12 min ago",
+                avatar: "MC",
+                type: "question"
+              }, {
+                id: 3,
+                user: "Emma Wilson",
+                message: "Just completed the Database Design workshop. Highly recommend!",
+                time: "1 hour ago",
+                avatar: "EW",
+                type: "achievement"
+              }, {
+                id: 4,
+                user: "Alex Rivera",
+                message: "Check out this cool JavaScript trick I learned today...",
+                time: "2 hours ago",
+                avatar: "AR",
+                type: "tip"
+              }].map(message => <div key={message.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
                     <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm flex-shrink-0">
                       {message.avatar}
                     </div>
@@ -175,27 +166,14 @@ const Index = () => {
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">{message.message}</p>
                       <div className="mt-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          message.type === 'feedback' ? 'bg-green-100 text-green-800' :
-                          message.type === 'question' ? 'bg-blue-100 text-blue-800' :
-                          message.type === 'achievement' ? 'bg-purple-100 text-purple-800' :
-                          'bg-orange-100 text-orange-800'
-                        }`}>
-                          {message.type === 'feedback' ? '💬 Feedback' :
-                           message.type === 'question' ? '❓ Question' :
-                           message.type === 'achievement' ? '🏆 Achievement' :
-                           '💡 Tip'}
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${message.type === 'feedback' ? 'bg-green-100 text-green-800' : message.type === 'question' ? 'bg-blue-100 text-blue-800' : message.type === 'achievement' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}`}>
+                          {message.type === 'feedback' ? '💬 Feedback' : message.type === 'question' ? '❓ Question' : message.type === 'achievement' ? '🏆 Achievement' : '💡 Tip'}
                         </span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
                 <div className="mt-4 pt-4 border-t border-border">
-                  <Button 
-                    variant="ghost" 
-                    className="w-full text-sm text-muted-foreground hover:text-foreground"
-                    onClick={() => navigate('/messages')}
-                  >
+                  <Button variant="ghost" className="w-full text-sm text-muted-foreground hover:text-foreground" onClick={() => navigate('/messages')}>
                     View all messages →
                   </Button>
                 </div>
@@ -207,58 +185,33 @@ const Index = () => {
             {/* Quick Actions */}
             <DashboardTile title="Quick Actions" subtitle="Access your key features">
               <div className="grid grid-cols-2 gap-4">
-                <Button 
-                  variant="outline" 
-                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
-                  onClick={() => navigate('/onboarding')}
-                >
+                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" onClick={() => navigate('/onboarding')}>
                   <BookOpen className="h-6 w-6 text-primary" />
                   <span className="text-sm font-medium">Assessment</span>
-                  {onboardingStatus?.responseCount > 0 && !onboardingStatus?.hasPassport && (
-                    <Badge variant="warning" className="text-xs">In Progress</Badge>
-                  )}
+                  {onboardingStatus?.responseCount > 0 && !onboardingStatus?.hasPassport && <Badge variant="warning" className="text-xs">In Progress</Badge>}
                 </Button>
                 
-                <Button 
-                  variant="outline" 
-                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
-                  onClick={() => navigate('/passport')} 
-                  disabled={!onboardingStatus?.hasPassport}
-                >
+                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" onClick={() => navigate('/passport')} disabled={!onboardingStatus?.hasPassport}>
                   <Award className="h-6 w-6 text-primary" />
                   <span className="text-sm font-medium">Passport</span>
-                  {onboardingStatus?.hasPassport && (
-                    <Badge className="text-xs bg-success text-success-foreground">Ready</Badge>
-                  )}
+                  {onboardingStatus?.hasPassport && <Badge className="text-xs bg-success text-success-foreground">Ready</Badge>}
                 </Button>
                 
-                <Button 
-                  variant="outline" 
-                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
-                  onClick={() => navigate('/passport')} 
-                  disabled={!onboardingStatus?.hasPassport}
-                >
+                <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" onClick={() => navigate('/passport')} disabled={!onboardingStatus?.hasPassport}>
                   <User className="h-6 w-6 text-primary" />
                   <span className="text-sm font-medium">Profile</span>
                 </Button>
                 
-                {isAdmin && (
-                  <Button 
-                    variant="outline" 
-                    className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" 
-                    onClick={() => navigate('/admin/onboarding-status')}
-                  >
+                {isAdmin && <Button variant="outline" className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200" onClick={() => navigate('/admin/onboarding-status')}>
                     <Settings className="h-6 w-6 text-primary" />
                     <span className="text-sm font-medium">Admin</span>
                     <Badge variant="secondary" className="text-xs">Admin</Badge>
-                  </Button>
-                )}
+                  </Button>}
               </div>
             </DashboardTile>
           </div>
         </main>
       </div>
-    </div>
-  );
+    </div>;
 };
 export default Index;
