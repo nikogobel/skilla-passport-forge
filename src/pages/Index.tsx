@@ -107,15 +107,19 @@ const Index = () => {
 
         {/* Dashboard Grid */}
         <main className="max-w-7xl mx-auto px-6 pb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 lg:items-stretch">
             {/* Progress Tracker - spans 1 column */}
-            <div className="lg:col-span-1">
-              <ProgressTracker />
+            <div className="lg:col-span-1 flex">
+              <div className="w-full">
+                <ProgressTracker />
+              </div>
             </div>
             
             {/* Weekly Calendar - spans 2 columns */}
-            <div className="lg:col-span-2">
-              <WeeklyCalendar />
+            <div className="lg:col-span-2 flex">
+              <div className="w-full">
+                <WeeklyCalendar />
+              </div>
             </div>
           </div>
 

@@ -10,7 +10,7 @@ interface DashboardTileProps {
 
 export function DashboardTile({ children, className, title, subtitle }: DashboardTileProps) {
   return (
-    <div className={cn("dashboard-tile p-6", className)}>
+    <div className={cn("dashboard-tile p-6 h-full", className)}>
       {(title || subtitle) && (
         <div className="mb-4">
           {title && <h3 className="text-lg font-semibold text-foreground">{title}</h3>}
