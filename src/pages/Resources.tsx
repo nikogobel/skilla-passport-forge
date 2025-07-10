@@ -3,8 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BookOpen, ExternalLink, Download, Search, Filter, Star } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Resources() {
+  const { isSidebarOpen } = useSidebar();
+  
   const resourceCategories = [
     { name: "All", count: 247 },
     { name: "Documentation", count: 89 },
@@ -75,7 +78,7 @@ export default function Resources() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className={`flex justify-between items-center ${!isSidebarOpen ? "ml-16" : ""}`}>
         <div>
           <h1 className="text-3xl font-bold text-foreground">Resources</h1>
           <p className="text-muted-foreground mt-2">

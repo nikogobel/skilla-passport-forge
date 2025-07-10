@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 interface UserStatus {
   user_id: string;
@@ -19,6 +20,7 @@ interface UserStatus {
 
 export default function AdminOnboardingStatus() {
   const { user } = useAuth();
+  const { isSidebarOpen } = useSidebar();
 
   // Check if user is admin
   const { data: isAdmin, isLoading: checkingAdmin } = useQuery({
@@ -134,7 +136,7 @@ export default function AdminOnboardingStatus() {
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div>
+        <div className={!isSidebarOpen ? "ml-16" : ""}>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Users className="h-8 w-8" />
             Onboarding Status Dashboard

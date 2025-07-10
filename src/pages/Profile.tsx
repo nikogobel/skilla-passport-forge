@@ -5,9 +5,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { Edit, Mail, Calendar, MapPin, Award, BookOpen, Users, Clock } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Profile() {
   const { user } = useAuth();
+  const { isSidebarOpen } = useSidebar();
 
   const profileStats = {
     coursesCompleted: 12,
@@ -43,7 +45,7 @@ export default function Profile() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-start">
+      <div className={`flex justify-between items-start ${!isSidebarOpen ? "ml-16" : ""}`}>
         <div>
           <h1 className="text-3xl font-bold text-foreground">Profile</h1>
           <p className="text-muted-foreground mt-2">

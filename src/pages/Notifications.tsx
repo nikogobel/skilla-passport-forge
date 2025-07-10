@@ -2,8 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, Settings, Check, X } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Notifications() {
+  const { isSidebarOpen } = useSidebar();
+  
   const notifications = [
     {
       id: 1,
@@ -84,7 +87,7 @@ export default function Notifications() {
   return (
     <div className="p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className={`flex justify-between items-center mb-6 ${!isSidebarOpen ? "ml-16" : ""}`}>
           <h1 className="text-3xl font-bold">Benachrichtigungen</h1>
           <Button variant="outline" size="sm">
             <Settings className="h-4 w-4 mr-2" />

@@ -2,8 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Clock, Award, Target, BookOpen } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Analytics() {
+  const { isSidebarOpen } = useSidebar();
+  
   const skillProgress = [
     { skill: "JavaScript", current: 85, target: 90, trend: "+5%" },
     { skill: "React", current: 78, target: 85, trend: "+12%" },
@@ -30,7 +33,7 @@ export default function Analytics() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
+      <div className={!isSidebarOpen ? "ml-16" : ""}>
         <h1 className="text-3xl font-bold text-foreground">Analytics</h1>
         <p className="text-muted-foreground mt-2">
           Track your learning progress and skill development

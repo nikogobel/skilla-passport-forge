@@ -3,8 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Star, Calendar, User } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function SearchPage() {
+  const { isSidebarOpen } = useSidebar();
+  
   const searchResults = [
     {
       id: 1,
@@ -38,10 +41,12 @@ export default function SearchPage() {
   return (
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Suche</h1>
-        <p className="text-muted-foreground mb-8">
-          Finden Sie Kurse, Workshops und Ressourcen
-        </p>
+        <div className={!isSidebarOpen ? "ml-16" : ""}>
+          <h1 className="text-3xl font-bold mb-6">Suche</h1>
+          <p className="text-muted-foreground mb-8">
+            Finden Sie Kurse, Workshops und Ressourcen
+          </p>
+        </div>
 
         {/* Search Bar */}
         <div className="flex gap-4 mb-8">

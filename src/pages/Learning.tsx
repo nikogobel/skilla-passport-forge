@@ -3,8 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Clock, Users, Trophy } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Learning() {
+  const { isSidebarOpen } = useSidebar();
+  
   const courses = [
     {
       id: 1,
@@ -44,7 +47,7 @@ export default function Learning() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
+      <div className={!isSidebarOpen ? "ml-16" : ""}>
         <h1 className="text-3xl font-bold text-foreground">Learning Center</h1>
         <p className="text-muted-foreground mt-2">
           Explore courses, track progress, and enhance your skills

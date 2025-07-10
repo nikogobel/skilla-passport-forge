@@ -6,6 +6,7 @@ import { SkillCard } from "@/components/SkillCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 interface SkillPassport {
   passport_json: {
@@ -24,6 +25,7 @@ interface SkillPassport {
 
 export default function Passport() {
   const { user } = useAuth();
+  const { isSidebarOpen } = useSidebar();
   const { toast } = useToast();
 
   // Fetch user profile
@@ -127,7 +129,7 @@ export default function Passport() {
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-start">
+        <div className={`flex justify-between items-start ${!isSidebarOpen ? "ml-16" : ""}`}>
           <div>
             <h1 className="text-3xl font-bold">Your Skill Passport</h1>
             <p className="text-muted-foreground mt-2">

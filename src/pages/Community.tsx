@@ -3,8 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MessageSquare, Users, Heart, Share2, BookOpen, Lightbulb } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Community() {
+  const { isSidebarOpen } = useSidebar();
+  
   const discussions = [
     {
       id: 1,
@@ -84,7 +87,7 @@ export default function Community() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className={`flex justify-between items-center ${!isSidebarOpen ? "ml-16" : ""}`}>
         <div>
           <h1 className="text-3xl font-bold text-foreground">Community</h1>
           <p className="text-muted-foreground mt-2">

@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/use-auth";
 import { Settings as SettingsIcon, User, Bell, Shield, Palette, Globe } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Settings() {
   const { signOut } = useAuth();
+  const { isSidebarOpen } = useSidebar();
 
   const handleSignOut = async () => {
     await signOut();
@@ -17,7 +19,7 @@ export default function Settings() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
+      <div className={!isSidebarOpen ? "ml-16" : ""}>
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-2">
           Manage your account preferences and application settings

@@ -2,8 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Send, User, Clock } from "lucide-react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export default function Messages() {
+  const { isSidebarOpen } = useSidebar();
+  
   const conversations = [
     {
       id: 1,
@@ -74,7 +77,9 @@ export default function Messages() {
   return (
     <div className="p-6 h-screen">
       <div className="max-w-6xl mx-auto h-full">
-        <h1 className="text-3xl font-bold mb-6">Nachrichten</h1>
+        <div className={!isSidebarOpen ? "ml-16" : ""}>
+          <h1 className="text-3xl font-bold mb-6">Nachrichten</h1>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-5/6">
           {/* Conversations List */}
