@@ -95,46 +95,58 @@ export default function Passport() {
   });
 
   // Extract data safely with defensive checks
-  const skills = Array.isArray(passport?.passport_json?.skills) ? passport.passport_json.skills : [];
-  const certifications = Array.isArray(passport?.passport_json?.certifications) ? passport.passport_json.certifications : [];
-  const languages = Array.isArray(passport?.passport_json?.languages) ? passport.passport_json.languages : [];
-  const profileData = passport?.passport_json?.profile;
+  const passportData = passport?.passport_json as any || {};
+  const skillsData = passportData.skills || {};
+  const allSkills = [
+    ...(Array.isArray(skillsData.tools) ? skillsData.tools : []),
+    ...(Array.isArray(skillsData.business) ? skillsData.business : []),
+    ...(Array.isArray(skillsData.technical) ? skillsData.technical : []),
+    ...(Array.isArray(skillsData.consulting) ? skillsData.consulting : [])
+  ];
+  const certifications = Array.isArray(passportData.certifications) ? passportData.certifications : [];
+  const languages = Array.isArray(passportData.languages) ? passportData.languages : [];
+  const education = Array.isArray(passportData.education) ? passportData.education : [];
+  const experience = Array.isArray(passportData.experience) ? passportData.experience : [];
+  const achievements = Array.isArray(passportData.achievements) ? passportData.achievements : [];
+  const interests = Array.isArray(passportData.interests) ? passportData.interests : [];
+  const personalInfo = passportData.personalInfo || {};
+  const skillsOverview = passportData.skillsOverview || {};
 
   // Extract categories from skills - moved before conditional returns
   const categories = useMemo(() => {
-    if (!Array.isArray(skills) || skills.length === 0) return ["all"];
-    const cats = [...new Set(skills.map(skill => skill.category).filter(Boolean))];
+    if (!Array.isArray(allSkills) || allSkills.length === 0) return ["all"];
+    const cats = [...new Set(allSkills.map(skill => skill.category).filter(Boolean))];
     return ["all", ...cats];
-  }, [skills]);
+  }, [allSkills]);
 
   // Filter skills based on search and category - moved before conditional returns
   const filteredSkills = useMemo(() => {
-    if (!Array.isArray(skills)) return [];
-    return skills.filter(skill => {
+    if (!Array.isArray(allSkills)) return [];
+    return allSkills.filter(skill => {
       const matchesSearch = skill.name?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "all" || skill.category === selectedCategory;
       const matchesFilter = skillFilter === "all" || 
         (skillFilter === "verified" && skill.verified) ||
-        (skillFilter === "high" && skill.proficiency >= 4) ||
-        (skillFilter === "recent" && skill.daysUntilDecay && skill.daysUntilDecay > 180);
+        (skillFilter === "high" && skill.level >= 7) ||
+        (skillFilter === "recent" && skill.experience);
       
       return matchesSearch && matchesCategory && matchesFilter;
     });
-  }, [skills, searchTerm, selectedCategory, skillFilter]);
+  }, [allSkills, searchTerm, selectedCategory, skillFilter]);
 
   // Calculate statistics - moved before conditional returns
   const stats = useMemo(() => {
-    if (!Array.isArray(skills)) {
+    if (!Array.isArray(allSkills)) {
       return { totalSkills: 0, verifiedSkills: 0, avgProficiency: "0", highProficiencySkills: 0 };
     }
-    const totalSkills = skills.length;
-    const verifiedSkills = skills.filter(s => s.verified).length;
-    const avgProficiency = skills.length > 0 ? 
-      (skills.reduce((acc, s) => acc + (s.proficiency || 0), 0) / skills.length).toFixed(1) : "0";
-    const highProficiencySkills = skills.filter(s => s.proficiency >= 4).length;
+    const totalSkills = allSkills.length;
+    const verifiedSkills = allSkills.filter(s => s.verified).length;
+    const avgProficiency = allSkills.length > 0 ? 
+      (allSkills.reduce((acc, s) => acc + (s.level || 0), 0) / allSkills.length).toFixed(1) : "0";
+    const highProficiencySkills = allSkills.filter(s => s.level >= 7).length;
     
     return { totalSkills, verifiedSkills, avgProficiency, highProficiencySkills };
-  }, [skills]);
+  }, [allSkills]);
 
   const handleDownloadJSON = () => {
     if (!passport?.passport_json) {
@@ -278,26 +290,26 @@ export default function Passport() {
               <div className="space-y-2">
                 <p className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Name</p>
                 <p className="text-lg font-semibold">
-                  {profileData?.name || profile?.full_name || "Not specified"}
+                  {personalInfo?.name || profile?.full_name || "Not specified"}
                 </p>
               </div>
               <div className="space-y-2">
                 <p className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
                   <Building className="h-4 w-4" />
-                  Business Unit
+                  Location
                 </p>
                 <p className="text-lg font-semibold">
-                  {profileData?.businessUnit || profile?.business_unit || "Not specified"}
+                  {personalInfo?.location || profile?.business_unit || "Not specified"}
                 </p>
               </div>
-              {profileData?.completedAt && (
+              {personalInfo?.title && (
                 <div className="space-y-2">
                   <p className="font-medium text-sm text-muted-foreground uppercase tracking-wide flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    Assessment Date
+                    <Trophy className="h-4 w-4" />
+                    Title
                   </p>
                   <p className="text-lg font-semibold">
-                    {new Date(profileData.completedAt).toLocaleDateString()}
+                    {personalInfo.title}
                   </p>
                 </div>
               )}
@@ -307,18 +319,30 @@ export default function Passport() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="skills" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-6 max-w-4xl">
             <TabsTrigger value="skills" className="flex items-center gap-2">
               <Star className="h-4 w-4" />
               Skills
             </TabsTrigger>
-            <TabsTrigger value="certifications" className="flex items-center gap-2">
+            <TabsTrigger value="experience" className="flex items-center gap-2">
+              <Building className="h-4 w-4" />
+              Experience
+            </TabsTrigger>
+            <TabsTrigger value="education" className="flex items-center gap-2">
               <Award className="h-4 w-4" />
+              Education
+            </TabsTrigger>
+            <TabsTrigger value="certifications" className="flex items-center gap-2">
+              <Trophy className="h-4 w-4" />
               Certifications
             </TabsTrigger>
             <TabsTrigger value="languages" className="flex items-center gap-2">
-              <Building className="h-4 w-4" />
+              <User className="h-4 w-4" />
               Languages
+            </TabsTrigger>
+            <TabsTrigger value="more" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              More
             </TabsTrigger>
           </TabsList>
 
@@ -386,27 +410,61 @@ export default function Passport() {
 
             {/* Skills Grid */}
             {filteredSkills.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredSkills.map((skill, index) => (
-                  <div key={index} className="relative group">
-                    <SkillCard
-                      skillName={skill.name}
-                      proficiency={skill.proficiency}
-                      daysUntilDecay={skill.daysUntilDecay}
-                    />
-                    {skill.verified && (
-                      <Badge className="absolute -top-2 -right-2 bg-green-500 hover:bg-green-600">
-                        Verified
-                      </Badge>
-                    )}
-                    {skill.category && (
-                      <Badge variant="outline" className="absolute -bottom-2 left-2 text-xs">
-                        {skill.category}
-                      </Badge>
-                    )}
-                  </div>
-                ))}
-              </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                 {filteredSkills.map((skill, index) => (
+                   <div key={index} className="relative group">
+                     <Card className="h-full">
+                       <CardContent className="p-4">
+                         <div className="flex justify-between items-start mb-2">
+                           <h3 className="font-semibold text-sm">{skill.name}</h3>
+                           <Badge variant="outline" className="text-xs">
+                             {skill.level}/10
+                           </Badge>
+                         </div>
+                         
+                         <div className="space-y-2">
+                           <div className="w-full bg-muted rounded-full h-2">
+                             <div 
+                               className="bg-primary h-2 rounded-full transition-all duration-300"
+                               style={{ width: `${(skill.level / 10) * 100}%` }}
+                             />
+                           </div>
+                           
+                           <div className="flex flex-wrap gap-1">
+                             {skill.category && (
+                               <Badge variant="secondary" className="text-xs">
+                                 {skill.category}
+                               </Badge>
+                             )}
+                             {skill.verified && (
+                               <Badge className="bg-green-500 hover:bg-green-600 text-xs">
+                                 Verified
+                               </Badge>
+                             )}
+                           </div>
+                           
+                           {skill.experience && (
+                             <p className="text-xs text-muted-foreground">
+                               Experience: {skill.experience}
+                             </p>
+                           )}
+                           
+                           {skill.certifications && skill.certifications.length > 0 && (
+                             <div className="space-y-1">
+                               <p className="text-xs text-muted-foreground font-medium">Certifications:</p>
+                               {skill.certifications.map((cert, certIndex) => (
+                                 <Badge key={certIndex} variant="outline" className="text-xs mr-1">
+                                   {cert}
+                                 </Badge>
+                               ))}
+                             </div>
+                           )}
+                         </div>
+                       </CardContent>
+                     </Card>
+                   </div>
+                 ))}
+               </div>
             ) : (
               <Card>
                 <CardContent className="p-8 text-center">
@@ -453,16 +511,95 @@ export default function Passport() {
             )}
           </TabsContent>
 
+          <TabsContent value="experience">
+            {experience.length > 0 ? (
+              <div className="space-y-4">
+                {experience.map((exp, index) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <CardTitle className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold">{exp.position}</h3>
+                          <p className="text-primary font-medium">{exp.company}</p>
+                        </div>
+                        <Badge variant="outline">{exp.duration}</Badge>
+                      </CardTitle>
+                      <CardDescription>{exp.location}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{exp.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No experience information available</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="education">
+            {education.length > 0 ? (
+              <div className="space-y-4">
+                {education.map((edu, index) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <CardTitle className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold">{edu.degree}</h3>
+                          <p className="text-primary font-medium">{edu.institution}</p>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="outline">{edu.year}</Badge>
+                          {edu.gpa && <p className="text-sm text-muted-foreground mt-1">GPA: {edu.gpa}</p>}
+                        </div>
+                      </CardTitle>
+                      {edu.specialization && (
+                        <CardDescription>Specialization: {edu.specialization}</CardDescription>
+                      )}
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Award className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No education information available</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
           <TabsContent value="languages">
             {languages.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {languages.map((lang, index) => (
                   <Card key={index}>
                     <CardContent className="p-4">
-                      <div className="flex justify-between items-center">
-                        <p className="font-semibold">{lang.name}</p>
-                        <Badge variant="outline">{lang.proficiency}</Badge>
+                      <div className="flex justify-between items-center mb-2">
+                        <p className="font-semibold">{lang.language}</p>
+                        <Badge variant="outline">{lang.level}</Badge>
                       </div>
+                      {lang.verified && (
+                        <Badge className="bg-green-500 hover:bg-green-600 text-xs">
+                          Verified
+                        </Badge>
+                      )}
+                      {lang.certifications && lang.certifications.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-xs text-muted-foreground">Certifications:</p>
+                          {lang.certifications.map((cert, certIndex) => (
+                            <Badge key={certIndex} variant="secondary" className="text-xs mr-1 mt-1">
+                              {cert}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -472,6 +609,91 @@ export default function Passport() {
                 <CardContent className="p-8 text-center">
                   <Building className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">No language information available</p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="more" className="space-y-6">
+            {/* Interests */}
+            {interests.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Interests</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {interests.map((interest, index) => (
+                      <Badge key={index} variant="secondary" className="px-3 py-1">
+                        {interest}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Achievements */}
+            {achievements.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5 text-amber-500" />
+                    Achievements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {achievements.map((achievement, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Star className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm">{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Skills Overview */}
+            {skillsOverview && Object.keys(skillsOverview).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Skills Overview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-primary">{skillsOverview.totalSkills || 0}</p>
+                      <p className="text-sm text-muted-foreground">Total Skills</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-green-500">{skillsOverview.verifiedSkills || 0}</p>
+                      <p className="text-sm text-muted-foreground">Verified</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-blue-500">{skillsOverview.averageLevel || 0}</p>
+                      <p className="text-sm text-muted-foreground">Avg Level</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-amber-500">{skillsOverview.experienceYears || 0}</p>
+                      <p className="text-sm text-muted-foreground">Years Exp.</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-purple-500">{skillsOverview.certificationsCount || 0}</p>
+                      <p className="text-sm text-muted-foreground">Certifications</p>
+                    </div>
+                    {skillsOverview.topCategories && (
+                      <div className="col-span-full">
+                        <p className="text-sm font-medium mb-2">Top Categories:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {skillsOverview.topCategories.map((category, index) => (
+                            <Badge key={index} variant="outline">{category}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             )}
