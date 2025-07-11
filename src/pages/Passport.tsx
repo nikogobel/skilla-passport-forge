@@ -94,22 +94,24 @@ export default function Passport() {
     enabled: !!user?.id,
   });
 
-  // Extract data safely
-  const skills = passport?.passport_json?.skills || [];
-  const certifications = passport?.passport_json?.certifications || [];
-  const languages = passport?.passport_json?.languages || [];
+  // Extract data safely with defensive checks
+  const skills = Array.isArray(passport?.passport_json?.skills) ? passport.passport_json.skills : [];
+  const certifications = Array.isArray(passport?.passport_json?.certifications) ? passport.passport_json.certifications : [];
+  const languages = Array.isArray(passport?.passport_json?.languages) ? passport.passport_json.languages : [];
   const profileData = passport?.passport_json?.profile;
 
   // Extract categories from skills - moved before conditional returns
   const categories = useMemo(() => {
+    if (!Array.isArray(skills) || skills.length === 0) return ["all"];
     const cats = [...new Set(skills.map(skill => skill.category).filter(Boolean))];
     return ["all", ...cats];
   }, [skills]);
 
   // Filter skills based on search and category - moved before conditional returns
   const filteredSkills = useMemo(() => {
+    if (!Array.isArray(skills)) return [];
     return skills.filter(skill => {
-      const matchesSearch = skill.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = skill.name?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "all" || skill.category === selectedCategory;
       const matchesFilter = skillFilter === "all" || 
         (skillFilter === "verified" && skill.verified) ||
@@ -122,10 +124,13 @@ export default function Passport() {
 
   // Calculate statistics - moved before conditional returns
   const stats = useMemo(() => {
+    if (!Array.isArray(skills)) {
+      return { totalSkills: 0, verifiedSkills: 0, avgProficiency: "0", highProficiencySkills: 0 };
+    }
     const totalSkills = skills.length;
     const verifiedSkills = skills.filter(s => s.verified).length;
     const avgProficiency = skills.length > 0 ? 
-      (skills.reduce((acc, s) => acc + s.proficiency, 0) / skills.length).toFixed(1) : 0;
+      (skills.reduce((acc, s) => acc + (s.proficiency || 0), 0) / skills.length).toFixed(1) : "0";
     const highProficiencySkills = skills.filter(s => s.proficiency >= 4).length;
     
     return { totalSkills, verifiedSkills, avgProficiency, highProficiencySkills };
