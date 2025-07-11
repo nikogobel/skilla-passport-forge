@@ -93,7 +93,7 @@ const Index = () => {
           
           {/* Centered Title and Subtitle */}
           <div className="text-center pt-8 pb-12">
-            <h1 className="text-5xl text-foreground mb-4 font-medium">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4">
               {getGreeting()}, {firstName}
             </h1>
             <p className="text-muted-foreground text-lg">
