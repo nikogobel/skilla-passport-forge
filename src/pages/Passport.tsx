@@ -94,6 +94,43 @@ export default function Passport() {
     enabled: !!user?.id,
   });
 
+  // Extract data safely
+  const skills = passport?.passport_json?.skills || [];
+  const certifications = passport?.passport_json?.certifications || [];
+  const languages = passport?.passport_json?.languages || [];
+  const profileData = passport?.passport_json?.profile;
+
+  // Extract categories from skills - moved before conditional returns
+  const categories = useMemo(() => {
+    const cats = [...new Set(skills.map(skill => skill.category).filter(Boolean))];
+    return ["all", ...cats];
+  }, [skills]);
+
+  // Filter skills based on search and category - moved before conditional returns
+  const filteredSkills = useMemo(() => {
+    return skills.filter(skill => {
+      const matchesSearch = skill.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === "all" || skill.category === selectedCategory;
+      const matchesFilter = skillFilter === "all" || 
+        (skillFilter === "verified" && skill.verified) ||
+        (skillFilter === "high" && skill.proficiency >= 4) ||
+        (skillFilter === "recent" && skill.daysUntilDecay && skill.daysUntilDecay > 180);
+      
+      return matchesSearch && matchesCategory && matchesFilter;
+    });
+  }, [skills, searchTerm, selectedCategory, skillFilter]);
+
+  // Calculate statistics - moved before conditional returns
+  const stats = useMemo(() => {
+    const totalSkills = skills.length;
+    const verifiedSkills = skills.filter(s => s.verified).length;
+    const avgProficiency = skills.length > 0 ? 
+      (skills.reduce((acc, s) => acc + s.proficiency, 0) / skills.length).toFixed(1) : 0;
+    const highProficiencySkills = skills.filter(s => s.proficiency >= 4).length;
+    
+    return { totalSkills, verifiedSkills, avgProficiency, highProficiencySkills };
+  }, [skills]);
+
   const handleDownloadJSON = () => {
     if (!passport?.passport_json) {
       toast({
@@ -152,41 +189,6 @@ export default function Passport() {
     );
   }
 
-  const skills = passport.passport_json.skills || [];
-  const certifications = passport.passport_json.certifications || [];
-  const languages = passport.passport_json.languages || [];
-  const profileData = passport.passport_json.profile;
-
-  // Extract categories from skills
-  const categories = useMemo(() => {
-    const cats = [...new Set(skills.map(skill => skill.category).filter(Boolean))];
-    return ["all", ...cats];
-  }, [skills]);
-
-  // Filter skills based on search and category
-  const filteredSkills = useMemo(() => {
-    return skills.filter(skill => {
-      const matchesSearch = skill.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === "all" || skill.category === selectedCategory;
-      const matchesFilter = skillFilter === "all" || 
-        (skillFilter === "verified" && skill.verified) ||
-        (skillFilter === "high" && skill.proficiency >= 4) ||
-        (skillFilter === "recent" && skill.daysUntilDecay && skill.daysUntilDecay > 180);
-      
-      return matchesSearch && matchesCategory && matchesFilter;
-    });
-  }, [skills, searchTerm, selectedCategory, skillFilter]);
-
-  // Calculate statistics
-  const stats = useMemo(() => {
-    const totalSkills = skills.length;
-    const verifiedSkills = skills.filter(s => s.verified).length;
-    const avgProficiency = skills.length > 0 ? 
-      (skills.reduce((acc, s) => acc + s.proficiency, 0) / skills.length).toFixed(1) : 0;
-    const highProficiencySkills = skills.filter(s => s.proficiency >= 4).length;
-    
-    return { totalSkills, verifiedSkills, avgProficiency, highProficiencySkills };
-  }, [skills]);
 
   return (
     <div className="min-h-screen bg-background p-4">
