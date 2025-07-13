@@ -16,6 +16,7 @@ import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Passport from "./pages/Passport";
 import AdminOnboardingStatus from "./pages/AdminOnboardingStatus";
+import WorkforceAnalytics from "./pages/WorkforceAnalytics";
 import NotFound from "./pages/NotFound";
 import LearningProgress from "./pages/LearningProgress";
 import Schedule from "./pages/Schedule";
@@ -60,6 +61,7 @@ const App = () => (
                         <Route path="/search" element={<SearchPage />} />
                         <Route path="/notifications" element={<Notifications />} />
                         <Route path="/admin/onboarding-status" element={<AdminOnboardingStatus />} />
+                        <Route path="/admin/workforce-analytics" element={<WorkforceAnalytics />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </AppLayout>

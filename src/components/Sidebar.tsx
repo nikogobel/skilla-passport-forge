@@ -10,7 +10,8 @@ import {
   MessageSquare,
   Search,
   Bell,
-  X
+  X,
+  Users
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
@@ -94,15 +95,24 @@ export function Sidebar() {
           );
         })}
 
-        {/* Admin Link */}
+        {/* Admin Links */}
         {isAdmin && (
-          <div
-            className={`sidebar-item ${location.pathname === "/admin/onboarding-status" ? 'active' : ''}`}
-            onClick={() => handleNavigation("/admin/onboarding-status")}
-            title="Admin Dashboard"
-          >
-            <Settings className="w-5 h-5" />
-          </div>
+          <>
+            <div
+              className={`sidebar-item ${location.pathname === "/admin/onboarding-status" ? 'active' : ''}`}
+              onClick={() => handleNavigation("/admin/onboarding-status")}
+              title="Admin Dashboard"
+            >
+              <Settings className="w-5 h-5" />
+            </div>
+            <div
+              className={`sidebar-item ${location.pathname === "/admin/workforce-analytics" ? 'active' : ''}`}
+              onClick={() => handleNavigation("/admin/workforce-analytics")}
+              title="Workforce Analytics"
+            >
+              <Users className="w-5 h-5" />
+            </div>
+          </>
         )}
       </div>
     </div>
