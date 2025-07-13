@@ -19,8 +19,8 @@ import { useSidebar } from "@/contexts/SidebarContext";
 
 const navigationItems = [
   { icon: Home, path: "/", label: "Home" },
-  { icon: BarChart3, path: "/analytics", label: "Analytics" },
-  { icon: BookOpen, path: "/onboarding", label: "Assessment" },
+  { icon: BookOpen, path: "/learning-progress", label: "Learning Progress" },
+  { icon: BarChart3, path: "/onboarding", label: "Assessment" },
   { icon: Award, path: "/passport", label: "Passport" },
   { icon: Calendar, path: "/calendar", label: "Calendar" },
   { icon: MessageSquare, path: "/messages", label: "Messages" },

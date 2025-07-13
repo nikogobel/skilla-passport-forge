@@ -17,9 +17,8 @@ import Onboarding from "./pages/Onboarding";
 import Passport from "./pages/Passport";
 import AdminOnboardingStatus from "./pages/AdminOnboardingStatus";
 import NotFound from "./pages/NotFound";
-import Learning from "./pages/Learning";
+import LearningProgress from "./pages/LearningProgress";
 import Schedule from "./pages/Schedule";
-import Analytics from "./pages/Analytics";
 import Community from "./pages/Community";
 import Resources from "./pages/Resources";
 import Profile from "./pages/Profile";
@@ -50,9 +49,8 @@ const App = () => (
                         <Route path="/" element={<Index />} />
                         <Route path="/onboarding" element={<Onboarding />} />
                         <Route path="/passport" element={<Passport />} />
-                        <Route path="/learning" element={<Learning />} />
+                        <Route path="/learning-progress" element={<LearningProgress />} />
                         <Route path="/schedule" element={<Schedule />} />
-                        <Route path="/analytics" element={<Analytics />} />
                         <Route path="/community" element={<Community />} />
                         <Route path="/resources" element={<Resources />} />
                         <Route path="/profile" element={<Profile />} />
